@@ -2,13 +2,11 @@ import java.awt.*;
 import java.util.Random;
 import javax.swing.*;
 
-
-
 /**
  * creates the UI the player uses to access the game.
  */
 public class GameUI extends JFrame {
-    int gameSpeed = 10;
+    int gameSpeed = 4;
     int fallingSpeed = 5;
     
     Color colorOfAsteroid = new Color(255, 255, 255);
@@ -34,6 +32,7 @@ public class GameUI extends JFrame {
 
         hitdetection.setAsteroidFormation(asteroidFormation);
         frame();
+        asteroidDisplay();
     }
 
     /**
@@ -50,9 +49,11 @@ public class GameUI extends JFrame {
         gamePanel.setBackground(Color.BLACK);
         this.setContentPane(gamePanel);
 
-        this.setVisible(true);
+        this.setVisible(true);        
+    }
 
-        asteroidFormation.rectangleGenerator();
+    private void asteroidDisplay() {
+        asteroidFormation.chooseShape();
         Timer timer = new Timer(gameSpeed, e -> {
             
             // move all asteroids in the list asteroids down
@@ -68,13 +69,11 @@ public class GameUI extends JFrame {
 
             //for now generate new rectangular shape when they hit the bottom
             if (asteroidFormation.asteroids.isEmpty()) {
-                asteroidFormation.rectangleGenerator();
-            }
-            
+                asteroidFormation.chooseShape();
+            } 
         });
         timer.start();
     }
-
 
     private class GamePanel extends JPanel {
         @Override
