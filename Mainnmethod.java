@@ -3,6 +3,6 @@
  */
 public class Mainnmethod {
     public static void main(String[] args) {
-        new GameUI();
+        new Homescreen();
     }
 }

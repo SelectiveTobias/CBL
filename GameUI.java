@@ -53,7 +53,7 @@ public class GameUI extends JFrame {
     }
 
     private void asteroidDisplay() {
-        asteroidFormation.chooseShape();
+        asteroidFormation.tuegenerator();
         Timer timer = new Timer(gameSpeed, e -> {
             
             // move all asteroids in the list asteroids down

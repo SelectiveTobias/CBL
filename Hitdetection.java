@@ -7,7 +7,6 @@ import java.util.Iterator;
 public class Hitdetection {
     int screenheight = Toolkit.getDefaultToolkit().getScreenSize().height;
 
-
     private AsteroidFormation asteroidFormation;
     private GameUI gameUI;
 
