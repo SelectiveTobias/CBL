@@ -1,11 +1,15 @@
-import java.awt.*; 
+import java.awt.*;
+import java.awt.event.ActionEvent; 
+import java.awt.event.ActionListener;
 import java.util.Random;
 import javax.swing.*;
 
 /**
  * creates the UI the player uses to access the game.
  */
-public class GameUI extends JFrame {
+public class GameUI extends JFrame implements ActionListener {
+    int screenwidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+    String command;
     int gameSpeed = 4;
     int fallingSpeed = 5;
     
@@ -19,6 +23,7 @@ public class GameUI extends JFrame {
 
     private AsteroidFormation asteroidFormation;
     private Hitdetection hitdetection;
+    JButton buttonExit;
 
     /**
      * regulates the uses of methods in the GameUI class.
@@ -43,10 +48,14 @@ public class GameUI extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
         this.setExtendedState(JFrame.MAXIMIZED_BOTH); 
         this.setResizable(false); 
-        //this.setUndecorated(true);
+        this.setUndecorated(true);
 
         gamePanel = new GamePanel(); 
         gamePanel.setBackground(Color.BLACK);
+        gamePanel.setLayout(null);
+
+        buttonExit = createButtonExit();
+        gamePanel.add(buttonExit);
         this.setContentPane(gamePanel);
 
         this.setVisible(true);        
@@ -85,6 +94,28 @@ public class GameUI extends JFrame {
             for (Asteroid a : asteroidFormation.asteroids) {
                 g.fillOval(a.xCoordinate, a.yCoordinate, a.width, a.height);
             }
+        }
+    }
+
+    private JButton createButtonExit() { 
+        JButton buttonExit = new JButton("Exit");
+        buttonExit.setFont(new Font("Times New Roman", Font.PLAIN, 35)); 
+        buttonExit.setBorderPainted(true); 
+        buttonExit.setBounds(screenwidth - 170, 20, 150, 50); 
+        buttonExit.setBackground(Color.red); 
+        buttonExit.setForeground(Color.WHITE);
+        buttonExit.setFocusPainted(false); 
+        buttonExit.setBorder(null); 
+        buttonExit.setActionCommand("exit"); 
+        buttonExit.addActionListener(this);
+        return buttonExit;
+    }
+
+    @Override 
+    public void actionPerformed(ActionEvent e) { 
+        command = e.getActionCommand(); 
+        if (command.equals("exit")) {
+            System.exit(0);
         }
     }
 }
