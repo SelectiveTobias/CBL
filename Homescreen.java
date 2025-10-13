@@ -74,9 +74,9 @@ public class Homescreen extends JFrame implements ActionListener, KeyListener {
 
     private JButton createButtonExit() { 
         JButton buttonExit = new JButton("Exit");
-        buttonExit.setFont(new Font("Times New Roman", Font.PLAIN, 35)); 
+        buttonExit.setFont(new Font("Times New Roman", Font.PLAIN, 25)); 
         buttonExit.setBorderPainted(true); 
-        buttonExit.setBounds(screenwidth - 170, 20, 150, 50); 
+        buttonExit.setBounds(screenwidth - 95, 20, 75, 30); 
         buttonExit.setBackground(Color.red); 
         buttonExit.setForeground(Color.WHITE);
         buttonExit.setFocusPainted(false); 
