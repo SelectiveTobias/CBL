@@ -1,20 +1,18 @@
 public class Ship {
     int heightShip = 10;
     int widthShip = 10;
-    int xCoordinateShip = 540;
-    int yCoordinateShip; // starts at the bottom of the screen
-
-    // new fields
+    int xCoordinateShip;
+    int yCoordinateShip;
     int screenWidth;
     int screenHeight;
 
-    // new: constructor to initialize position based on screen size
+    
     public Ship(int screenWidth, int screenHeight) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         // start centered at bottom
         this.xCoordinateShip = (screenWidth / 2) - (widthShip / 2);
-        this.yCoordinateShip = screenHeight - heightShip - 50; // slightly above bottom
+        this.yCoordinateShip = screenHeight - heightShip - 50;
     }
 
     public void moveRight() {
