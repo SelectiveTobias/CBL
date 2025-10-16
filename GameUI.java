@@ -28,6 +28,7 @@ public class GameUI extends JFrame implements ActionListener {
 
     private AsteroidFormation asteroidFormation;
     private Hitdetection hitdetection;
+    private Homescreen homescreen;
     JButton buttonExit;
 
     private Ship ship;
@@ -42,8 +43,6 @@ public class GameUI extends JFrame implements ActionListener {
 
         asteroidFormation.setGameUI(this);
         hitdetection.setAsteroidFormation(asteroidFormation);
-        hitdetection.setGameUI(this);
-        hitdetection.setBullets(new Bullets(ship.getShipX(), ship.getShipY(), ship.getWidthShip()));
 
         frame();
         asteroidDisplay();
@@ -57,8 +56,8 @@ public class GameUI extends JFrame implements ActionListener {
     void frame() { 
         //sets up original frame and panel
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH); 
-        this.setResizable(false); 
+        this.setExtendedState(MAXIMIZED_BOTH); 
+        this.setResizable(true); 
         this.setUndecorated(true);
 
         gamePanel = new GamePanel(); 
@@ -105,6 +104,7 @@ public class GameUI extends JFrame implements ActionListener {
             hitdetection.asteroidGroundDetecter();
             hitdetection.bulletAsteroidDetector();
             gamePanel.repaint();
+            //System.out.println(homescreen.score);
 
             //for now generate new rectangular shape when they hit the bottom
             if (asteroidFormation.asteroids.isEmpty()) {

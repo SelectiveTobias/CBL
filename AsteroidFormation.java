@@ -7,7 +7,7 @@ import java.util.Random;
  */
 public class AsteroidFormation {
 
-    public static ArrayList<Asteroid> asteroids = new ArrayList<>();
+    public ArrayList<Asteroid> asteroids = new ArrayList<>();
 
     Random random = new Random();
     int screenwidth = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -188,7 +188,12 @@ public class AsteroidFormation {
                     int xCoordinate = startX + 350;    
                     int yCoordinate = startY + row * spacingYForU;
                     asteroids.add(new Asteroid(xCoordinate, yCoordinate, width, height));
-                } else if (col == 1) {
+                } else if (col == 3) {
+                    int xCoordinate = startX + spacingX + 420;
+                    int yCoordinate = startY + row * spacingYForU;
+                    asteroids.add(new Asteroid(xCoordinate, yCoordinate, width, height));
+                }
+            } if (col == 1) {
                     int xCoordinate = startX + 400;
                     int yCoordinate = startY + 270;
                     asteroids.add(new Asteroid(xCoordinate, yCoordinate, width, height));
@@ -196,13 +201,8 @@ public class AsteroidFormation {
                     int xCoordinate = startX + 470;
                     int yCoordinate = startY + 270;
                     asteroids.add(new Asteroid(xCoordinate, yCoordinate, width, height));
-                } else if (col == 3) {
-                    int xCoordinate = startX + spacingX + 420;
-                    int yCoordinate = startY + row * spacingYForU;
-                    asteroids.add(new Asteroid(xCoordinate, yCoordinate, width, height));
-                }
-            }
         }
+    }
 
         //generate the /
         for (int row = 0; row < amountOfRowsSlash; row++) {

@@ -6,21 +6,11 @@ import java.util.Iterator;
  */
 public class Hitdetection {
     int screenheight = Toolkit.getDefaultToolkit().getScreenSize().height;
-
     private AsteroidFormation asteroidFormation;
-    private GameUI gameUI;
-    private Bullets bullets;
-
-    public void setGameUI(GameUI gameUI) {
-        this.gameUI = gameUI;
-    }
+    int score = 0;
     
     public void setAsteroidFormation(AsteroidFormation asteroidFormation) {
         this.asteroidFormation = asteroidFormation;
-    }
-
-    public void setBullets(Bullets bullets) {
-        this.bullets = bullets;
     }
     
     /**
@@ -58,7 +48,7 @@ public class Hitdetection {
         while (bulletIterator.hasNext()) {
             Bullets bullet = bulletIterator.next();
 
-            Iterator<Asteroid> asteroidIterator = AsteroidFormation.asteroids.iterator();
+            Iterator<Asteroid> asteroidIterator = asteroidFormation.asteroids.iterator();
 
             while (asteroidIterator.hasNext()) {
                 Asteroid asteroid = asteroidIterator.next();
@@ -72,6 +62,7 @@ public class Hitdetection {
                 if (xOverlap && yOverlap) {
                     asteroidIterator.remove();
                     bulletIterator.remove();
+                    score += 1;
                     break; // move to next bullet
                 }
             }
