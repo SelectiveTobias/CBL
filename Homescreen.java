@@ -16,7 +16,7 @@ public class Homescreen extends JFrame implements ActionListener, KeyListener {
 
     JPanel panelGeneral;
     JLabel pressSpaceToStart;
-    JButton buttonSettings;
+    JButton buttonScoreboard;
     JButton buttonExit;
 
     public Homescreen() {
@@ -36,8 +36,8 @@ public class Homescreen extends JFrame implements ActionListener, KeyListener {
         panelGeneral = panelGeneral(); 
         this.add(panelGeneral);
 
-        buttonSettings = createButtonSettings();
-        panelGeneral.add(buttonSettings);
+        buttonScoreboard = createbuttonScoreboard();
+        panelGeneral.add(buttonScoreboard);
 
         pressSpaceToStart = createPressSpaceToStart();
         panelGeneral.add(pressSpaceToStart);
@@ -60,16 +60,16 @@ public class Homescreen extends JFrame implements ActionListener, KeyListener {
         return panelGeneral;
     }
 
-    private JButton createButtonSettings() { 
-        JButton buttonSettings = new JButton("settings"); 
-        buttonSettings.setFont(new Font("Times New Roman", Font.PLAIN, 35)); 
-        buttonSettings.setBorderPainted(true); 
-        buttonSettings.setBounds(395, 500, 150, 150); 
-        buttonSettings.setBackground(Color.GRAY); 
-        buttonSettings.setFocusPainted(false); 
-        buttonSettings.setActionCommand("settings"); 
-        buttonSettings.addActionListener(this); 
-        return buttonSettings; 
+    private JButton createbuttonScoreboard() { 
+        JButton buttonScoreboard = new JButton("Scoreboard"); 
+        buttonScoreboard.setFont(new Font("Times New Roman", Font.PLAIN, 35)); 
+        buttonScoreboard.setBorderPainted(true); 
+        buttonScoreboard.setBounds(screenwidth / 2 - 150, 500, 300, 150); 
+        buttonScoreboard.setBackground(Color.GRAY); 
+        buttonScoreboard.setFocusPainted(false); 
+        buttonScoreboard.setActionCommand("scoreboard"); 
+        buttonScoreboard.addActionListener(this); 
+        return buttonScoreboard; 
     } 
 
     private JButton createButtonExit() { 
@@ -89,7 +89,7 @@ public class Homescreen extends JFrame implements ActionListener, KeyListener {
     private JLabel createPressSpaceToStart() {
         JLabel pressSpaceToStart = new JLabel();
         int yPositioning = screenheight - 200;
-        double xPositioningDouble = screenwidth / 2.7;
+        double xPositioningDouble = screenwidth / 2;
         int xPositioning = (int) xPositioningDouble;
         pressSpaceToStart.setBounds(xPositioning, yPositioning, 500, 100); 
         pressSpaceToStart.setText("Press space to start"); 
@@ -116,8 +116,9 @@ public class Homescreen extends JFrame implements ActionListener, KeyListener {
     @Override 
     public void actionPerformed(ActionEvent e) { 
         command = e.getActionCommand(); 
-        if (command.equals("settings")) {
-            //settings need to be implemented
+        if (command.equals("scoreboard")) {
+            this.dispose();
+            new ScoreboardUI();
         } else if (command.equals("exit")) {
             System.exit(0);
         }
@@ -126,6 +127,7 @@ public class Homescreen extends JFrame implements ActionListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent k) {
         if (k.getKeyCode() == KeyEvent.VK_SPACE) {
+            this.dispose();
             new GameUI();;
         }
     }
