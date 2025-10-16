@@ -16,7 +16,7 @@ public class GameUI extends JFrame implements ActionListener {
     int screenheight = Toolkit.getDefaultToolkit().getScreenSize().height;
     String command;
     int gameSpeed = 4;
-    int fallingSpeed = 5;
+    int fallingSpeed = 3;
     
     Color colorOfAsteroid = new Color(255, 255, 255);
 
@@ -37,14 +37,13 @@ public class GameUI extends JFrame implements ActionListener {
      */
     public GameUI() {
         asteroidFormation = new AsteroidFormation();
-        asteroidFormation.setGameUI(this);
-
+        hitdetection = new Hitdetection();
         ship = new Ship(screenwidth, screenheight);
 
-        hitdetection = new Hitdetection();
-        hitdetection.setGameUI(this);
-
+        asteroidFormation.setGameUI(this);
         hitdetection.setAsteroidFormation(asteroidFormation);
+        hitdetection.setGameUI(this);
+        hitdetection.setBullets(new Bullets(ship.getShipX(), ship.getShipY(), ship.getWidthShip()));
 
         frame();
         asteroidDisplay();
@@ -104,6 +103,7 @@ public class GameUI extends JFrame implements ActionListener {
             //int b = random.nextInt(256);
             //colorOfAsteroid = new Color(r, g, b);
             hitdetection.asteroidGroundDetecter();
+            hitdetection.bulletAsteroidDetector();
             gamePanel.repaint();
 
             //for now generate new rectangular shape when they hit the bottom

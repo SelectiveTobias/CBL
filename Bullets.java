@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class Bullets {
-    private static List<Bullets> bulletsList = new ArrayList<>();
+    public static List<Bullets> bulletsList = new ArrayList<>();
     public static final int BULLET_SPAWN_DELAY = 500;
 
     int widthBullet = 5;

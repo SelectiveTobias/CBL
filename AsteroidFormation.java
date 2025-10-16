@@ -7,7 +7,7 @@ import java.util.Random;
  */
 public class AsteroidFormation {
 
-    public ArrayList<Asteroid> asteroids = new ArrayList<>();
+    public static ArrayList<Asteroid> asteroids = new ArrayList<>();
 
     Random random = new Random();
     int screenwidth = Toolkit.getDefaultToolkit().getScreenSize().width;
