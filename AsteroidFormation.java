@@ -165,20 +165,18 @@ public class AsteroidFormation {
         int spacingYFore = 80;
         
         //generate the T
-        for (int col = 0; col < amountOfColumns; col++) {
-            if (col == 0) { 
-                for (int row = 0; row < amountOfRowsT; row++) {
-                    int xCoordinate = startX + row * spacingX;
-                    int yCoordinate = startY + col * spacingYForT;
-                    asteroids.add(new Asteroid(xCoordinate, yCoordinate, width, height));
-                } 
-            } else {
-                for (int row = 0; row < amountOfColumns; row++) {
-                    int xCoordinate = startX + spacingX;
-                    int yCoordinate = startY + col * spacingYForT;
-                    asteroids.add(new Asteroid(xCoordinate, yCoordinate, width, height));
-                }
+        for (int row = 0; row < amountOfRowsT; row++) {
+            if (row == 1) {
+                continue;
             }
+            int xCoordinate = startX + row * spacingX;
+            int yCoordinate = startY;
+            asteroids.add(new Asteroid(xCoordinate, yCoordinate, width, height));
+        } 
+        for (int row = 0; row < amountOfColumns; row++) {
+            int xCoordinate = startX + spacingX;
+            int yCoordinate = startY + row * spacingYForT;
+            asteroids.add(new Asteroid(xCoordinate, yCoordinate, width, height));
         }
 
         //generate the U
@@ -193,16 +191,17 @@ public class AsteroidFormation {
                     int yCoordinate = startY + row * spacingYForU;
                     asteroids.add(new Asteroid(xCoordinate, yCoordinate, width, height));
                 }
-            } if (col == 1) {
-                    int xCoordinate = startX + 400;
-                    int yCoordinate = startY + 270;
-                    asteroids.add(new Asteroid(xCoordinate, yCoordinate, width, height));
-                } else if (col == 2) {
-                    int xCoordinate = startX + 470;
-                    int yCoordinate = startY + 270;
-                    asteroids.add(new Asteroid(xCoordinate, yCoordinate, width, height));
+            } 
+            if (col == 1) {
+                int xCoordinate = startX + 400;
+                int yCoordinate = startY + 270;
+                asteroids.add(new Asteroid(xCoordinate, yCoordinate, width, height));
+            } else if (col == 2) {
+                int xCoordinate = startX + 470;
+                int yCoordinate = startY + 270;
+                asteroids.add(new Asteroid(xCoordinate, yCoordinate, width, height));
+            }
         }
-    }
 
         //generate the /
         for (int row = 0; row < amountOfRowsSlash; row++) {

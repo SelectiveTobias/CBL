@@ -2,7 +2,7 @@ import java.util.*;
 
 public class Bullets {
     public static List<Bullets> bulletsList = new ArrayList<>();
-    public static final int BULLET_SPAWN_DELAY = 500;
+    public static final int BULLET_SPAWN_DELAY = 300;
 
     int widthBullet = 5;
     int heightBullet = 10;

@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.util.Iterator;
 
+import javax.swing.SwingUtilities;
+
 /**
  * detects whether an asteroid hits the ground or is hit by a bullet.
  */
@@ -8,9 +10,16 @@ public class Hitdetection {
     int screenheight = Toolkit.getDefaultToolkit().getScreenSize().height;
     private AsteroidFormation asteroidFormation;
     int score = 0;
+    int lives = 5;
     
     public void setAsteroidFormation(AsteroidFormation asteroidFormation) {
         this.asteroidFormation = asteroidFormation;
+    }
+
+    private GameUI gameUI;
+
+    public void setGameUI(GameUI gameUI) {
+        this.gameUI = gameUI;
     }
     
     /**
@@ -21,7 +30,12 @@ public class Hitdetection {
         while (iterator.hasNext()) {
             Asteroid a = iterator.next();
             if (a.yCoordinate + a.height >= screenheight) {
+                lives -= 1;
                 iterator.remove();
+                SwingUtilities.invokeLater(() -> gameUI.repaint());
+            }
+            if (lives < 1) {
+                gameUI.triggerGameEnd();
             }
         }
     }
