@@ -2,6 +2,7 @@ import java.awt.*;
 import java.util.ArrayList; 
 import java.util.Random;
 
+
 /**
  * determines in which formation the asteroids will fall.
  */
@@ -12,11 +13,6 @@ public class AsteroidFormation {
     Random random = new Random();
     int screenwidth = Toolkit.getDefaultToolkit().getScreenSize().width;
     int screenheight = Toolkit.getDefaultToolkit().getScreenSize().height;
-    private GameUI gameUI;
-
-    public void setGameUI(GameUI gameUI) {
-        this.gameUI = gameUI;
-    }
 
     int width = screenwidth / 25;
     int height = screenheight / 15;
@@ -56,8 +52,6 @@ public class AsteroidFormation {
                 asteroids.add(new Asteroid(xCoordinate, yCoordinate, width, height));
             }
         }
-        gameUI.repaint();
-        
     }
 
     /**
@@ -84,7 +78,6 @@ public class AsteroidFormation {
                 asteroids.add(new Asteroid(xCoordinate, yCoordinate, width, height));
             }
         }
-        gameUI.repaint();
     }
     
     /**
@@ -103,21 +96,20 @@ public class AsteroidFormation {
             int yCoordinate = centerY + (int) (radius * Math.sin(angle));
             asteroids.add(new Asteroid(xCoordinate, yCoordinate, width, height));
         }
-        gameUI.repaint(); 
     }  
     
     /**
     * generates 9 asteroids in a triangular shape.
     */
     public void heartGenerator() {
-        int amountOfRowsCircle = 4;   //increase amount of asteroids per call with this.
+        int amountOfRowsHeart = 4;   //increase amount of asteroids per call with this.
 
         int startX = random.nextInt(screenwidth - 700) + 300;
         int startY = 0;
         int spacingX = 100;
         int spacingY = 90;
         
-        for (int row = 0; row < amountOfRowsCircle; row++) {
+        for (int row = 0; row < amountOfRowsHeart; row++) {
             if (row == 0) {
                 for (int i = 0; i < 5; i++) {
                     if (i == 0 || i == 2 || i == 4) {
@@ -135,12 +127,14 @@ public class AsteroidFormation {
                     int sign = (int) Math.pow(-1, v);
                     int xCoordinate = startX - sign * (3 - row) * spacingX;
                     int yCoordinate = startY + row * spacingY;
-                    asteroids.add(new Asteroid(xCoordinate, yCoordinate, width, height));
-                }
 
+                    // so the tip does not get added twice
+                    if (!(row == amountOfRowsHeart - 1 && v == 1)) {
+                        asteroids.add(new Asteroid(xCoordinate, yCoordinate, width, height));
+                    }
+                }
             }
         }
-        gameUI.repaint();
     }
 
     /**
@@ -245,8 +239,7 @@ public class AsteroidFormation {
                 int yCoordinate = startY + 3 * spacingYFore + 25;
                 asteroids.add(new Asteroid(xCoordinate, yCoordinate, width, height));
             }
-        } 
-        gameUI.repaint();   
+        }   
     }
 }
         

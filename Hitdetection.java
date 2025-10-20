@@ -32,7 +32,6 @@ public class Hitdetection {
             if (a.yCoordinate + a.height >= screenheight) {
                 lives -= 1;
                 iterator.remove();
-                SwingUtilities.invokeLater(() -> gameUI.repaint());
             }
             if (lives < 1) {
                 gameUI.triggerGameEnd();

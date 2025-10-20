@@ -3,10 +3,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.List;
 import java.util.Random;
 import javax.swing.*;
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  * creates the UI the player uses to access the game.
@@ -17,7 +16,9 @@ public class GameUI extends JFrame implements ActionListener {
     String command;
     int gameSpeed = 4;
     int fallingSpeed = 1;
+    int timesPerLevel = 4;
     private boolean isGameOver = false;
+    private int bulletSpawnDelay = Bullets.BULLET_SPAWN_DELAY; 
     
     Color colorOfAsteroid = new Color(255, 255, 255);
 
@@ -29,32 +30,35 @@ public class GameUI extends JFrame implements ActionListener {
 
     private AsteroidFormation asteroidFormation;
     private Hitdetection hitdetection;
-    private Homescreen homescreen;
     private GameOver gameOver;
     JButton buttonExit;
     JPanel gameOverPanel;
 
+    int timesPerformed = 0;
 
     private Ship ship;
+
+    private long lastBulletSpawnTime = 0;
+
 
     /**
      * regulates the uses of methods in the GameUI class.
      */
     public GameUI() {
         asteroidFormation = new AsteroidFormation();
-        hitdetection = new Hitdetection();
         ship = new Ship(screenwidth, screenheight);
+        
         gameOver = new GameOver();
+        hitdetection = new Hitdetection();
 
-        asteroidFormation.setGameUI(this);
         gameOver.setGameUI(this);
         hitdetection.setAsteroidFormation(asteroidFormation);
         hitdetection.setGameUI(this);
 
         frame();
-        asteroidDisplay();
+        startGameLoop();
         shipControl();
-        bulletMovement();
+
     }
 
     /**
@@ -79,6 +83,60 @@ public class GameUI extends JFrame implements ActionListener {
         this.setVisible(true);
     }
 
+    private Timer gameLoopTimer;
+
+    private void startGameLoop() {
+        int frameDelay = 16; // 60 FPS
+
+        gameLoopTimer = new Timer(frameDelay, e -> {
+            if (isGameOver) {
+                return;
+            }
+
+            // Move asteroids
+            for (Asteroid a : asteroidFormation.asteroids) {
+                a.yCoordinate += fallingSpeed;
+            }
+
+            // Spawn bullets
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastBulletSpawnTime >= bulletSpawnDelay) {
+                Bullets.addBullet(new Bullets(ship.getShipX(),
+                    ship.getShipY(), ship.getWidthShip()));
+                lastBulletSpawnTime = currentTime;
+            }
+
+            // Move bullets up
+            List<Bullets> bulletsList = Bullets.getBulletsList();
+            bulletsList.removeIf(bullet -> bullet.getBulletY() < -bullet.getHeightBullet());
+            for (Bullets bullet : bulletsList) {
+                bullet.moveUp();
+            }
+
+            // Collisions
+            hitdetection.asteroidGroundDetecter();
+            hitdetection.bulletAsteroidDetector();
+
+            // Repaint once per frame
+            gamePanel.repaint();
+
+            // Spawn new asteroids when cleared
+            if (asteroidFormation.asteroids.isEmpty()) {
+                asteroidFormation.chooseShape();
+                timesPerformed++;
+
+                if (timesPerformed % timesPerLevel == 0) {
+                    fallingSpeed += 1;
+                    if (bulletSpawnDelay > 100) {
+                        bulletSpawnDelay -= 35;
+                    }
+                }
+            }
+        });
+        gameLoopTimer.start();
+    }
+
+
     private void shipControl() {
         gamePanel.addKeyListener(new KeyAdapter() {
             @Override
@@ -87,68 +145,13 @@ public class GameUI extends JFrame implements ActionListener {
                 int code = e.getKeyCode();
                 if (code == KeyEvent.VK_LEFT) {
                     ship.moveLeft();
-                    gamePanel.repaint();
+                    SwingUtilities.invokeLater(() -> gamePanel.repaint());;
                 } else if (code == KeyEvent.VK_RIGHT) {
                     ship.moveRight();
-                    gamePanel.repaint();
+                    SwingUtilities.invokeLater(() -> gamePanel.repaint());;
                 }
             }
         });
-    }
-
-    private void asteroidDisplay() {
-        //asteroidFormation.tuegenerator();
-        Timer timer = new Timer(gameSpeed, e -> {
-            //stops updating when the game is over
-            if (isGameOver) {
-                return;
-            }
-            // move all asteroids in the list asteroids down
-            for (Asteroid a : asteroidFormation.asteroids) {
-                a.yCoordinate += fallingSpeed;
-            }
-            //int r = random.nextInt(256);
-            //int g = random.nextInt(256);
-            //int b = random.nextInt(256);
-            //colorOfAsteroid = new Color(r, g, b);
-            hitdetection.asteroidGroundDetecter();
-            hitdetection.bulletAsteroidDetector();
-            gamePanel.repaint();
-            //System.out.println(homescreen.score);
-
-            //for now generate new rectangular shape when they hit the bottom
-            if (asteroidFormation.asteroids.isEmpty()) {
-                asteroidFormation.chooseShape();
-            } 
-        });
-        timer.start();
-    }
-
-    private void bulletMovement() {
-        // move bullets up and remove if off-screen
-        Timer bulletMoveTimer = new Timer(gameSpeed, e -> {
-            //stops updating when the game is over
-            if (isGameOver) {
-                return;
-            }
-            List<Bullets> bulletsList = Bullets.getBulletsList();
-            bulletsList.removeIf(bullet -> bullet.getBulletY() < -bullet.getHeightBullet());
-            for (Bullets bullet : bulletsList) {
-                bullet.moveUp();
-            }
-            gamePanel.repaint();
-        });
-        bulletMoveTimer.start();
-
-        // spawn new bullets at regular intervals
-        Timer bulletSpawnTimer = new Timer(Bullets.BULLET_SPAWN_DELAY, e -> {
-            //stops updating when the game is over
-            if (isGameOver) {
-                return;
-            }
-            Bullets.addBullet(new Bullets(ship.getShipX(), ship.getShipY(), ship.getWidthShip()));
-        });
-        bulletSpawnTimer.start();
     }
 
     /**
@@ -169,8 +172,8 @@ public class GameUI extends JFrame implements ActionListener {
             } else {
                 System.err.println("Heart image not found!");
                 heartImage = null;
+            }
         }
-    }
 
         @Override
         public void paintComponent(Graphics g) {
