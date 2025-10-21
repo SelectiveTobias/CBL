@@ -147,7 +147,7 @@ public class AsteroidFormation {
         int amountOfRowsSlash = 4;
         int amountOfColumnse = 6;
 
-        int startX = random.nextInt(screenwidth - 1300);
+        int startX = screenwidth / 2 - 600;
         int startY = 0;
         int startXe = startX + 850;
         int spacingX = 100;

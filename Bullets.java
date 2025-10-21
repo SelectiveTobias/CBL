@@ -45,4 +45,8 @@ public class Bullets {
     public static void removeBullet(Bullets bullet) {
         bulletsList.remove(bullet);
     }
+
+    public static void clearBullets() {
+        bulletsList.clear();
+    }
 }

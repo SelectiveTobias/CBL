@@ -14,8 +14,6 @@ public class GameUI extends JFrame implements ActionListener {
     int screenwidth = Toolkit.getDefaultToolkit().getScreenSize().width;
     int screenheight = Toolkit.getDefaultToolkit().getScreenSize().height;
     String command;
-    int gameSpeed = 4;
-    int fallingSpeed = 1;
     int timesPerLevel = 4;
     int savedScore;
     private boolean isGameOver = false;
@@ -27,13 +25,12 @@ public class GameUI extends JFrame implements ActionListener {
 
     public GamePanel gamePanel;
 
-    boolean validPositionForAsteroid;
-
     private AsteroidFormation asteroidFormation;
     private Hitdetection hitdetection;
     private GameOver gameOver;
     JButton buttonExit;
     JPanel gameOverPanel;
+    JLabel liveScore;
 
     int timesPerformed = 0;
 
@@ -41,6 +38,10 @@ public class GameUI extends JFrame implements ActionListener {
 
     private long lastBulletSpawnTime = 0;
 
+    // Intro flag
+    private boolean isIntro = true;
+    private final int introFallingSpeed = 5;  // TU/e intro falls faster
+    private int normalFallingSpeed = 1;       // normal game falling speed
 
     /**
      * regulates the uses of methods in the GameUI class.
@@ -56,17 +57,18 @@ public class GameUI extends JFrame implements ActionListener {
         hitdetection.setAsteroidFormation(asteroidFormation);
         hitdetection.setGameUI(this);
 
+        // TU/e intro
+        asteroidFormation.tuegenerator();
+
         frame();
         startGameLoop();
         shipControl();
-
     }
 
     /**
      * creates the frame of the game.
      */
     void frame() { 
-        //sets up original frame and panel
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
         this.setExtendedState(MAXIMIZED_BOTH); 
         this.setResizable(true); 
@@ -76,6 +78,9 @@ public class GameUI extends JFrame implements ActionListener {
         gamePanel.setBackground(Color.BLACK);
         gamePanel.setLayout(null);
         gamePanel.setFocusable(true);
+
+        liveScore = liveScore(); 
+        gamePanel.add(liveScore);
         
         buttonExit = createButtonExit();
         gamePanel.add(buttonExit);
@@ -90,58 +95,67 @@ public class GameUI extends JFrame implements ActionListener {
         int frameDelay = 16; // 60 FPS
 
         gameLoopTimer = new Timer(frameDelay, e -> {
-            if (isGameOver) {
-                return;
-            }
-
             // Move asteroids
+            int currentFallingSpeed = isIntro ? introFallingSpeed : normalFallingSpeed;
             for (Asteroid a : asteroidFormation.asteroids) {
-                a.yCoordinate += fallingSpeed;
+                a.yCoordinate += currentFallingSpeed;
             }
 
-            // Spawn bullets
-            long currentTime = System.currentTimeMillis();
-            if (currentTime - lastBulletSpawnTime >= bulletSpawnDelay) {
-                Bullets.addBullet(new Bullets(ship.getShipX(),
-                    ship.getShipY(), ship.getWidthShip()));
-                lastBulletSpawnTime = currentTime;
-            }
+            if (isIntro) {
+                // Check if all intro asteroids reached bottom
+                boolean allReachedBottom = asteroidFormation.asteroids.stream()
+                    .allMatch(a -> a.yCoordinate + a.height >= screenheight);
 
-            // Move bullets up
-            List<Bullets> bulletsList = Bullets.getBulletsList();
-            bulletsList.removeIf(bullet -> bullet.getBulletY() < -bullet.getHeightBullet());
-            for (Bullets bullet : bulletsList) {
-                bullet.moveUp();
-            }
+                if (allReachedBottom) {
+                    asteroidFormation.asteroids.clear();
+                    isIntro = false;
+                    timesPerformed = 0;
+                    bulletSpawnDelay = Bullets.BULLET_SPAWN_DELAY;
+                }
+                // During intro, no bullets and no collisions
+            } else {
+                // Normal game logic
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastBulletSpawnTime >= bulletSpawnDelay) {
+                    Bullets.addBullet(new Bullets(ship.getShipX(),
+                        ship.getShipY(), ship.getWidthShip()));
+                    lastBulletSpawnTime = currentTime;
+                }
 
-            // Collisions
-            hitdetection.asteroidGroundDetecter();
-            hitdetection.bulletAsteroidDetector();
+                List<Bullets> bulletsList = Bullets.getBulletsList();
+                bulletsList.removeIf(bullet -> bullet.getBulletY() < -bullet.getHeightBullet());
+                for (Bullets bullet : bulletsList) {
+                    bullet.moveUp();
+                }
 
-            // Repaint once per frame
-            gamePanel.repaint();
+                hitdetection.asteroidGroundDetecter();
+                hitdetection.bulletAsteroidDetector();
+                liveScore.setText("Score " + hitdetection.score);
 
-            // Spawn new asteroids when cleared
-            if (asteroidFormation.asteroids.isEmpty()) {
-                asteroidFormation.chooseShape();
-                timesPerformed++;
+                //generate new asteroids when old ones are gone
+                if (asteroidFormation.asteroids.isEmpty()) {
+                    asteroidFormation.chooseShape();
+                    timesPerformed++;
 
-                if (timesPerformed % timesPerLevel == 0) {
-                    fallingSpeed += 1;
-                    if (bulletSpawnDelay > 100) {
-                        bulletSpawnDelay -= 35;
+                    //every timesPerLevel times it gets harder
+                    if (timesPerformed % timesPerLevel == 0) {
+                        normalFallingSpeed += 1;
+                        if (bulletSpawnDelay > 100) {
+                            bulletSpawnDelay -= 35;
+                        }
                     }
                 }
             }
+
+            gamePanel.repaint();
         });
+
         gameLoopTimer.start();
     }
-
 
     private void shipControl() {
         gamePanel.addKeyListener(new KeyAdapter() {
             @Override
-            // handle key presses to move the ship
             public void keyPressed(KeyEvent e) {
                 int code = e.getKeyCode();
                 if (code == KeyEvent.VK_LEFT) {
@@ -156,16 +170,15 @@ public class GameUI extends JFrame implements ActionListener {
     }
 
     /**
-     * displays the gamePanel.
+     * gamePanel so we can draw in the actual gamewindow.
      */
     public class GamePanel extends JPanel {
         private final Image heartImage;
 
         /**
-         * made to load the heartImage.
+         * this is for the hearts on top of the screen.
          */
         public GamePanel() {
-            // Load the heart image once
             java.net.URL imgURL = getClass().getResource("/heartIconForLives.png");
             if (imgURL != null) {
                 heartImage = new ImageIcon(imgURL).getImage()
@@ -186,30 +199,22 @@ public class GameUI extends JFrame implements ActionListener {
                 g.fillOval(a.xCoordinate, a.yCoordinate, a.width, a.height);
             }
 
-            // draw the ship at the bottom
+            // draw the ship
             g.setColor(Color.GREEN);
-            g.fillRect(
-                ship.getShipX(), 
-                ship.getShipY(), 
-                ship.getWidthShip(), 
-                ship.getHeightShip()
-            );
+            g.fillRect(ship.getShipX(), ship.getShipY(), ship.getWidthShip(), ship.getHeightShip());
 
             // draw bullets
             g.setColor(Color.RED);
             for (Bullets bullet : Bullets.getBulletsList()) {
-                g.fillRect(
-                    bullet.getBulletX(),
-                    bullet.getBulletY(),
-                    bullet.getWidthBullet(),
-                    bullet.getHeightBullet()
-                );
-            }    
-            // draw hearts for lives
+                g.fillRect(bullet.getBulletX(), bullet.getBulletY(), 
+                    bullet.getWidthBullet(), bullet.getHeightBullet());
+            }   
+
+            // draw hearts
             if (heartImage != null) {
                 for (int i = 0; i < hitdetection.lives; i++) {
                     g.drawImage(heartImage, 20 + i * 35, 20, null);
-                }
+                }          
             }
         }
     }
@@ -229,9 +234,21 @@ public class GameUI extends JFrame implements ActionListener {
         return buttonExit;
     }
 
+    private JLabel liveScore() {
+        JLabel liveScore = new JLabel();
+        int yPositioning = 55;
+        int xPositioning = 20;
+        liveScore.setBounds(xPositioning, yPositioning, 150, 25);  
+        liveScore.setFont(new Font("Times new Roman", Font.BOLD, 30)); 
+        liveScore.setOpaque(false); 
+        liveScore.setBackground(Color.BLACK); 
+        liveScore.setForeground(Color.WHITE); 
+        return liveScore; 
+    }
+
     /**
-     * creates the Game Over Panel.
-     * @return the Panel
+     * creates gameOverPanel.
+     * @return the panel
      */
     public JPanel createGameOverPanel() {
         JPanel gameOverPanel = new JPanel();
@@ -246,13 +263,11 @@ public class GameUI extends JFrame implements ActionListener {
 
         JButton goToHomeScreen = createHomeScreenButton();
 
-        // Add vertical spacing and alignment
-        gameOverPanel.add(Box.createVerticalGlue());       // pushes content to center vertically
+        gameOverPanel.add(Box.createVerticalGlue());
         gameOverPanel.add(gameOverText);
-        gameOverPanel.add(Box.createRigidArea(
-            new Dimension(0, 40))); // spacing between text & button
+        gameOverPanel.add(Box.createRigidArea(new Dimension(0, 40)));
         gameOverPanel.add(goToHomeScreen);
-        gameOverPanel.add(Box.createVerticalGlue());       // keeps it centered vertically
+        gameOverPanel.add(Box.createVerticalGlue());
 
         gameOverPanel.setVisible(true);
         return gameOverPanel;
@@ -262,8 +277,8 @@ public class GameUI extends JFrame implements ActionListener {
         JButton goToHomescreen = new JButton("Main Menu");
         goToHomescreen.setFont(new Font("Times New Roman", Font.PLAIN, 35));
         goToHomescreen.setPreferredSize(new Dimension(250, 80));
-        goToHomescreen.setMaximumSize(new Dimension(250, 80)); // fixes width in BoxLayout
-        goToHomescreen.setAlignmentX(Component.CENTER_ALIGNMENT); // centers horizontally
+        goToHomescreen.setMaximumSize(new Dimension(250, 80));
+        goToHomescreen.setAlignmentX(Component.CENTER_ALIGNMENT);
         goToHomescreen.setBackground(Color.GRAY);
         goToHomescreen.setForeground(Color.WHITE);
         goToHomescreen.setFocusPainted(false);
@@ -271,24 +286,24 @@ public class GameUI extends JFrame implements ActionListener {
         goToHomescreen.addActionListener(this);
         return goToHomescreen;
     }
-    
-
 
     /**
-     * ends the game by setting isGameOver to true and triggering the game over panel.
+     * makes the game stop and resets for the next play.
      */
     public void triggerGameEnd() {
+        Bullets.clearBullets();
         if (isGameOver) {
             return;
         }
         isGameOver = true;
         savedScore = hitdetection.getScore();
+        if (gameLoopTimer != null) {
+            gameLoopTimer.stop(); // stop the old loop
+        }
         if (savedScore > Scoreboard.readScore()) {
             Scoreboard.writeScore(savedScore);
         }
-        SwingUtilities.invokeLater(() -> {
-            gameOver.gameEnder();
-        });
+        SwingUtilities.invokeLater(() -> gameOver.gameEnder());
     }
 
     @Override 
