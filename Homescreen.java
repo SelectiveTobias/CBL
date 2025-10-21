@@ -36,8 +36,6 @@ public class Homescreen extends JFrame implements ActionListener, KeyListener {
         panelGeneral = panelGeneral(); 
         this.add(panelGeneral);
 
-        panelGeneral.add(buttonScoreboard);
-
         pressSpaceToStart = createPressSpaceToStart();
         panelGeneral.add(pressSpaceToStart);
 

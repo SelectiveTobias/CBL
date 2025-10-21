@@ -234,31 +234,41 @@ public class GameUI extends JFrame implements ActionListener {
      */
     public JPanel createGameOverPanel() {
         JPanel gameOverPanel = new JPanel();
-        gameOverPanel.setLayout(new BorderLayout());
+        gameOverPanel.setLayout(new BoxLayout(gameOverPanel, BoxLayout.Y_AXIS));
         gameOverPanel.setBounds(0, 0, screenwidth, screenheight);
         gameOverPanel.setBackground(new Color(0, 0, 0, 180));
 
         JLabel gameOverText = new JLabel("GAME OVER", SwingConstants.CENTER);
         gameOverText.setFont(new Font("Arial", Font.BOLD, 100));
         gameOverText.setForeground(Color.WHITE);
+        gameOverText.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         JButton goToHomeScreen = createHomeScreenButton();
-        gameOverPanel.add(goToHomeScreen, BorderLayout.SOUTH);
-        gameOverPanel.add(gameOverText, BorderLayout.CENTER);
+
+        // Add vertical spacing and alignment
+        gameOverPanel.add(Box.createVerticalGlue());       // pushes content to center vertically
+        gameOverPanel.add(gameOverText);
+        gameOverPanel.add(Box.createRigidArea(
+            new Dimension(0, 40))); // spacing between text & button
+        gameOverPanel.add(goToHomeScreen);
+        gameOverPanel.add(Box.createVerticalGlue());       // keeps it centered vertically
+
         gameOverPanel.setVisible(true);
         return gameOverPanel;
     }
 
     private JButton createHomeScreenButton() {
-        JButton goToHomescreen = new JButton();
-        //THIS STIL NEEDS THE CODE to GO TO THE HOMESCREEN
-        goToHomescreen.setFont(new Font("Times New Roman", Font.PLAIN, 35)); 
-        goToHomescreen.setBorderPainted(true); 
-        goToHomescreen.setBounds(395, 500, 150, 150); 
-        goToHomescreen.setBackground(Color.GRAY); 
-        goToHomescreen.setFocusPainted(false); 
-        goToHomescreen.setActionCommand("back"); 
-        goToHomescreen.addActionListener(this); 
-        return goToHomescreen; 
+        JButton goToHomescreen = new JButton("Main Menu");
+        goToHomescreen.setFont(new Font("Times New Roman", Font.PLAIN, 35));
+        goToHomescreen.setPreferredSize(new Dimension(250, 80));
+        goToHomescreen.setMaximumSize(new Dimension(250, 80)); // fixes width in BoxLayout
+        goToHomescreen.setAlignmentX(Component.CENTER_ALIGNMENT); // centers horizontally
+        goToHomescreen.setBackground(Color.GRAY);
+        goToHomescreen.setForeground(Color.WHITE);
+        goToHomescreen.setFocusPainted(false);
+        goToHomescreen.setActionCommand("back");
+        goToHomescreen.addActionListener(this);
+        return goToHomescreen;
     }
     
 

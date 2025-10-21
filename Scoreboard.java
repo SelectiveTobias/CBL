@@ -47,3 +47,4 @@ public class Scoreboard {
             return 0;
         }
     }
+}
