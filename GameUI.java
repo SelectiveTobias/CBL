@@ -241,15 +241,27 @@ public class GameUI extends JFrame implements ActionListener {
         JLabel gameOverText = new JLabel("GAME OVER", SwingConstants.CENTER);
         gameOverText.setFont(new Font("Arial", Font.BOLD, 100));
         gameOverText.setForeground(Color.WHITE);
-
+        JButton goToHomeScreen = createHomeScreenButton();
+        gameOverPanel.add(goToHomeScreen, BorderLayout.SOUTH);
         gameOverPanel.add(gameOverText, BorderLayout.CENTER);
         gameOverPanel.setVisible(true);
-
-        JButton goToHomescreen = new JButton();
-        //THIS STIL NEEDS THE CODE to GO TO THE HOMESCREEN
-
         return gameOverPanel;
     }
+
+    private JButton createHomeScreenButton() {
+        JButton goToHomescreen = new JButton();
+        //THIS STIL NEEDS THE CODE to GO TO THE HOMESCREEN
+        goToHomescreen.setFont(new Font("Times New Roman", Font.PLAIN, 35)); 
+        goToHomescreen.setBorderPainted(true); 
+        goToHomescreen.setBounds(395, 500, 150, 150); 
+        goToHomescreen.setBackground(Color.GRAY); 
+        goToHomescreen.setFocusPainted(false); 
+        goToHomescreen.setActionCommand("back"); 
+        goToHomescreen.addActionListener(this); 
+        return goToHomescreen; 
+    }
+    
+
 
     /**
      * ends the game by setting isGameOver to true and triggering the game over panel.
@@ -269,6 +281,9 @@ public class GameUI extends JFrame implements ActionListener {
         command = e.getActionCommand(); 
         if (command.equals("exit")) {
             System.exit(0);
+        } else if (command.equals("back")) {
+            this.dispose();
+            new Homescreen();
         }
     }
 }

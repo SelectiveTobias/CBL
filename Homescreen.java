@@ -36,7 +36,6 @@ public class Homescreen extends JFrame implements ActionListener, KeyListener {
         panelGeneral = panelGeneral(); 
         this.add(panelGeneral);
 
-        buttonScoreboard = createbuttonScoreboard();
         panelGeneral.add(buttonScoreboard);
 
         pressSpaceToStart = createPressSpaceToStart();
@@ -59,18 +58,6 @@ public class Homescreen extends JFrame implements ActionListener, KeyListener {
         panelGeneral.requestFocusInWindow();
         return panelGeneral;
     }
-
-    private JButton createbuttonScoreboard() { 
-        JButton buttonScoreboard = new JButton("Scoreboard"); 
-        buttonScoreboard.setFont(new Font("Times New Roman", Font.PLAIN, 35)); 
-        buttonScoreboard.setBorderPainted(true); 
-        buttonScoreboard.setBounds(screenwidth / 2 - 150, 500, 300, 150); 
-        buttonScoreboard.setBackground(Color.GRAY); 
-        buttonScoreboard.setFocusPainted(false); 
-        buttonScoreboard.setActionCommand("scoreboard"); 
-        buttonScoreboard.addActionListener(this); 
-        return buttonScoreboard; 
-    } 
 
     private JButton createButtonExit() { 
         JButton buttonExit = new JButton("Exit");
@@ -116,10 +103,7 @@ public class Homescreen extends JFrame implements ActionListener, KeyListener {
     @Override 
     public void actionPerformed(ActionEvent e) { 
         command = e.getActionCommand(); 
-        if (command.equals("scoreboard")) {
-            this.dispose();
-            new ScoreboardUI();
-        } else if (command.equals("exit")) {
+        if (command.equals("exit")) {
             System.exit(0);
         }
     }
