@@ -16,6 +16,8 @@ public class Homescreen extends JFrame implements ActionListener, KeyListener {
 
     JPanel panelGeneral;
     JLabel pressSpaceToStart;
+    JLabel highScore;
+    JLabel title;
     JButton buttonScoreboard;
     JButton buttonExit;
 
@@ -36,6 +38,10 @@ public class Homescreen extends JFrame implements ActionListener, KeyListener {
         panelGeneral = panelGeneral(); 
         this.add(panelGeneral);
 
+        title = createTitle();
+        panelGeneral.add(title);
+        highScore = createHighScore();
+        panelGeneral.add(highScore);
         pressSpaceToStart = createPressSpaceToStart();
         panelGeneral.add(pressSpaceToStart);
 
@@ -72,9 +78,9 @@ public class Homescreen extends JFrame implements ActionListener, KeyListener {
     }
 
     private JLabel createPressSpaceToStart() {
-        JLabel pressSpaceToStart = new JLabel();
-        int yPositioning = screenheight - 200;
-        double xPositioningDouble = screenwidth / 2;
+        JLabel pressSpaceToStart = new JLabel("pressSpaceToStart", SwingConstants.CENTER);
+        int yPositioning = screenheight - 100;
+        double xPositioningDouble = screenwidth / 2 - 250;
         int xPositioning = (int) xPositioningDouble;
         pressSpaceToStart.setBounds(xPositioning, yPositioning, 500, 100); 
         pressSpaceToStart.setText("Press space to start"); 
@@ -83,6 +89,34 @@ public class Homescreen extends JFrame implements ActionListener, KeyListener {
         pressSpaceToStart.setBackground(Color.BLACK); 
         pressSpaceToStart.setForeground(Color.WHITE); 
         return pressSpaceToStart; 
+    }
+
+    private JLabel createTitle() {
+        JLabel title = new JLabel("Title", SwingConstants.CENTER);
+        int yPositioning = screenheight - 750;
+        double xPositioningDouble = screenwidth / 2 - 500;
+        int xPositioning = (int) xPositioningDouble;
+        title.setBounds(xPositioning, yPositioning, 1000, 100); 
+        title.setText("Asteroid Blaster"); 
+        title.setFont(new Font("monospacedFont", Font.BOLD, 100)); 
+        title.setOpaque(true); 
+        title.setBackground(Color.BLACK); 
+        title.setForeground(Color.GREEN); 
+        return title; 
+    }
+
+    private JLabel createHighScore() {
+        JLabel highScore = new JLabel("HighScore", SwingConstants.CENTER);
+        int yPositioning = screenheight - 200;
+        double xPositioningDouble = screenwidth / 2 - 250;
+        int xPositioning = (int) xPositioningDouble;
+        highScore.setBounds(xPositioning, yPositioning, 500, 100); 
+        highScore.setText("High Score: " + Scoreboard.readScore()); 
+        highScore.setFont(new Font("Times new Roman", Font.BOLD, 50)); 
+        highScore.setOpaque(true); 
+        highScore.setBackground(Color.BLACK); 
+        highScore.setForeground(Color.WHITE); 
+        return highScore; 
     }
 
     private void blinkingLabel() {

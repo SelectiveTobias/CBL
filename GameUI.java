@@ -17,6 +17,7 @@ public class GameUI extends JFrame implements ActionListener {
     int gameSpeed = 4;
     int fallingSpeed = 1;
     int timesPerLevel = 4;
+    int savedScore;
     private boolean isGameOver = false;
     private int bulletSpawnDelay = Bullets.BULLET_SPAWN_DELAY; 
     
@@ -281,6 +282,10 @@ public class GameUI extends JFrame implements ActionListener {
             return;
         }
         isGameOver = true;
+        savedScore = hitdetection.getScore();
+        if (savedScore > Scoreboard.readScore()) {
+            Scoreboard.writeScore(savedScore);
+        }
         SwingUtilities.invokeLater(() -> {
             gameOver.gameEnder();
         });

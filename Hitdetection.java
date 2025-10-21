@@ -22,6 +22,10 @@ public class Hitdetection {
         this.gameUI = gameUI;
     }
     
+    public int getScore() {
+        return score;
+    }
+
     /**
      * removes asteroids if they hit the ground.
      */
