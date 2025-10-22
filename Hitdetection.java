@@ -1,8 +1,6 @@
 import java.awt.*;
 import java.util.Iterator;
 
-import javax.swing.SwingUtilities;
-
 /**
  * detects whether an asteroid hits the ground or is hit by a bullet.
  */
