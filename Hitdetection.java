@@ -1,9 +1,5 @@
 import java.awt.*;
 import java.util.Iterator;
-<<<<<<< HEAD
-import javax.swing.SwingUtilities;
-=======
->>>>>>> a1daad1d6cf14b23c49cd92f70318e529d796f4f
 
 /**
  * detects whether an asteroid hits the ground or is hit by a bullet.
@@ -64,11 +60,13 @@ public class Hitdetection {
     public void bulletAsteroidDetector() {
         Iterator<Bullets> bulletIterator = Bullets.bulletsList.iterator();
 
+        //as long as there are bullets, do this
         while (bulletIterator.hasNext()) {
             Bullets bullet = bulletIterator.next();
 
             Iterator<Asteroid> asteroidIterator = asteroidFormation.asteroids.iterator();
 
+            //as long as there are asteroids, do this
             while (asteroidIterator.hasNext()) {
                 Asteroid asteroid = asteroidIterator.next();
 
@@ -78,6 +76,7 @@ public class Hitdetection {
                 boolean xOverlap = bullet.xCoordinateBullet < asteroid.xCoordinate + asteroid.width
                     && bullet.xCoordinateBullet + bullet.widthBullet > asteroid.xCoordinate;
 
+                // if bullet and asteroid have overlap from both y and x delete them and add score
                 if (xOverlap && yOverlap) {
                     asteroidIterator.remove();
                     bulletIterator.remove();
