@@ -1,6 +1,5 @@
 import java.awt.*;
 import java.util.Iterator;
-
 import javax.swing.SwingUtilities;
 
 /**
